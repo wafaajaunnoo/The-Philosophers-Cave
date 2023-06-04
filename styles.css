@@ -1,0 +1,641 @@
+* {
+    box-sizing: border-box;
+    transform-style: preserve-3d;
+}
+
+:root {
+    --perspective: 2000;
+    --rotate-x: -20;
+    --rotate-y:-65;
+    --container-height: 50;
+    --container-width: 50;
+    --zoomed: 0;
+    --wall-thickness: 4;
+    --cm: calc((var(--container-height) / 240));
+    --width: var(--room-width, 15);
+    --height: var(--room-height, 10);
+    --depth: var(--room-depth, 4);
+    --beige: #F3F1E8;
+}
+
+body {
+    min-height: 100vh;
+    overflow: hidden;background: rgb(203,246,186);
+background: radial-gradient(circle, rgba(203,246,186,1) 0%, rgba(255,199,190,1) 100%);
+}
+  
+.canvas {
+    perspective: calc(var(--perspective, 300) * 1px);
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    height: calc(var(--container-height, 25) * 1vmin);
+    width: calc(var(--container-width, 25) * 1vmin);
+    transform-style: preserve-3d;
+    transform: rotateX(calc((var(--rotate-x, -24) - (var(--zoomed) * var(--rotate-x, -24))) * 1deg)) rotateY(calc(((var(--rotate-y, -24) - (var(--zoomed) * var(--rotate-y, -24))) + (var(--zoomed) * -90)) * 1deg)) rotateX(90deg) translate3d(0, 0, 0);
+}
+.container:before {
+    background: rgba(0,0,0,0.5);
+    height: 112%;
+    width: 112%;
+    position: absolute;
+    top: -8%;
+    left: -10%;
+    transform: translate3d(0, 0, -11vmin);
+    z-index: -1;
+}
+.room {
+    height: calc(var(--depth) * 1vmin);
+    width: calc(var(--width) * 1vmin);
+    position: absolute;
+    transform: rotateZ(calc(var(--starting-rotation, 0) * 1deg)) translate3d(calc(var(--x, 0) * 1vmin), calc(var(--y, 0) * 1vmin), calc(var(--z, 0) * 1vmin)) rotateX(calc(var(--rotate-room-x, 0) * 1deg)) rotateY(calc(var(--rotate-room-y, 0) * 1deg)) rotateZ(calc(var(--rotate-room-z, 0) * 1deg));
+}
+
+.room > div:nth-of-type(1) {
+    height: calc(var(--height) * 1vmin);
+    width: 100%;
+    transform-origin: 50% 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateX(-90deg) translate3d(0, 0, calc((var(--depth) / 2) * 1vmin));
+}
+.room > div:nth-of-type(2) {
+    height: calc(var(--height) * 1vmin);
+    width: 100%;
+    transform-origin: 50% 50%;
+    transform: translate(-50%, -50%) rotateX(-90deg) rotateY(180deg) translate3d(0, 0, calc((var(--depth) / 2) * 1vmin));
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.room > div:nth-of-type(3) {
+    height: calc(var(--height) * 1vmin);
+    width: calc(var(--depth) * 1vmin);
+    transform: translate(-50%, -50%) rotateX(-90deg) rotateY(90deg) translate3d(0, 0, calc((var(--width) / 2) * 1vmin));
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.room > div:nth-of-type(4) {
+    height: calc(var(--height) * 1vmin);
+    width: calc(var(--depth) * 1vmin);
+    transform: translate(-50%, -50%) rotateX(-90deg) rotateY(-90deg) translate3d(0, 0, calc((var(--width) / 2) * 1vmin));
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.room > div:nth-of-type(5) {
+    height: calc(var(--depth) * 1vmin);
+    width: calc(var(--width) * 1vmin);
+    transform: translate(-50%, -50%) translate3d(0, 0, calc((var(--height) / 2) * 1vmin));
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.room > div:nth-of-type(6) {
+    height: calc(var(--depth) * 1vmin);
+    width: calc(var(--width) * 1vmin);
+    transform: translate(-50%, -50%) translate3d(0, 0, calc((var(--height) / 2) * -1vmin)) rotateX(180deg);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.cave {
+    height: 100%;
+    width: 100%;
+    transform: translate3d(0, 0, calc((-10 + (var(--zoomed) * -10)) * 1vmin));
+}
+.floor {
+    --height: 1;
+    --width: calc(50 + var(--wall-thickness));
+    --depth: calc(50 + var(--wall-thickness));
+    --z: -0.5;
+    --y: calc(var(--wall-thickness) * -1);
+    --x: calc(var(--wall-thickness) * -1);
+}
+
+.floor div:nth-of-type(1) {
+    background: rgb(72, 57, 27);
+}
+
+.floor div:nth-of-type(3) {
+    background: rgb(118, 84, 71);
+}
+
+.floor div:nth-of-type(5):after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    transform: rotate(90deg);
+    background-image: url(https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/rm187-nunny-52.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=eba847af773c1f2c8c924cb25fc647c3);
+    background-repeat: none;
+    background-size: cover;
+    filter: brightness(120%);
+}
+
+.wall--left {
+    --height: calc(220 * var(--cm));
+    --width: var(--wall-thickness);
+    --depth: calc((240 * var(--cm)) + var(--wall-thickness));
+    --z: calc(110 * var(--cm));
+    --x: calc(var(--wall-thickness) * -1);
+    --y: calc(var(--wall-thickness) * -1);
+}
+
+.wall--left div:nth-of-type(1) {
+    background: var(--beige);
+}
+
+.wall--left div:nth-of-type(2) {
+    background: rgb(219, 210, 210);
+    }
+.wall--left div:nth-of-type(3) {
+    background: rgb(219, 210, 210);
+    overflow: hidden;
+}
+.wall--left div:nth-of-type(3):before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height:100%;
+    width:100%;
+    background-size: cover;
+    background-image: url(https://cdn.shopify.com/s/files/1/0285/1316/products/w0605_1s_Bespoke-style-floral-and-butterfly-pattern-wallpaper-Dark-Academia_Repeating-Pattern-Sample-1.jpg?v=1631212685);
+}
+.wall--left div:nth-of-type(3):after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 80%;
+    width: 80%;
+    overflow: hidden;
+    transform: rotate(41deg) translate(-18%, -36%);
+    background: radial-gradient(circle at 50% 100%, rgba(242,236,217,0.85), transparent 60%);
+}
+
+.wall--left div:nth-of-type(4), .wall--left div:nth-of-type(6) {
+    background: rgb(219, 210, 210);
+}
+.wall--right-lower {
+    --height: calc(100 * var(--cm));
+    --width: 50;
+    --depth: var(--wall-thickness);
+    --z: calc(50 * var(--cm));
+    --y: calc(var(--wall-thickness) * -1);
+}
+.wall--right-lower:after {
+    content: '';
+    height: 30%;
+    width: calc((114 * var(--cm)) * 1vmin);
+    top: 102%;
+    left: calc((22 * var(--cm)) * 1vmin);
+    background: rgba(0,0,0,0.5);
+    position: absolute;
+    transform-origin: 50% 0;
+    transform: rotateX(90deg) translate(0, calc((44 * var(--cm)) * 1vmin));
+}
+.wall--right-lower div {
+    background: var(--beige);
+}
+
+.wall--right-lower div:nth-of-type(2), .wall--right-lower div:nth-of-type(3) {
+    background: rgb(219, 210, 210);
+}
+.wall--right-left {
+    --height: calc(220 * var(--cm));
+    --width: calc(22 * var(--cm));
+    --depth: var(--wall-thickness);
+    --z: calc(110 * var(--cm));
+    --y: calc(var(--wall-thickness) * -1);
+}
+.wall--right-left div {
+    background: var(--beige);
+}
+.wall--right-left div:nth-of-type(3) {
+    background: rgb(219, 210, 210);
+}
+.wall--right-left div:nth-of-type(2) {
+    background: rgb(219, 210, 210);
+}
+.wall--right-upper {
+    --height: calc(22 * var(--cm));
+    --width: calc(240 * var(--cm));
+    --depth: var(--wall-thickness);
+    --z: calc(209 * var(--cm));
+    --y: calc(var(--wall-thickness) * -1);
+
+    > div{
+        background: var(--beige);
+    }
+}
+.wall--right-upper div:nth-of-type(2), .wall--right-upper div:nth-of-type(3) {
+    background: rgb(219, 210, 210);
+}
+.wall--right-upper div:nth-of-type(5) {
+    background: rgb(219, 210, 210);
+}
+.wall--right-right {
+    --height: calc(220 * var(--cm));
+    --width: calc((240 - 136) * var(--cm));
+    --depth: var(--wall-thickness);
+    --z: calc(110 * var(--cm));
+    --y: calc(var(--wall-thickness) * -1);
+    --x: calc(136 * var(--cm));
+    > div{
+        background: var(--beige);
+    }
+}
+.wall--right-right div:nth-of-type(1):after {
+    content: '';
+    position: absolute;
+    height: 24%;
+    width: 70%;
+    border-radius: 50%;
+    background: none;
+    top: 15%;
+    left: 15%;
+    opacity: 0.75;
+}
+.wall--right-right div:nth-of-type(2), .wall--right-right div:nth-of-type(3) {
+    background: rgb(219, 210, 210);
+}
+.wall--right-right div:nth-of-type(4) {
+    background: var(--beige);
+}
+.wall--right-right div:nth-of-type(5) {
+    background: rgb(219, 210, 210);
+}
+
+.windowsill {
+    --height: calc(2 * var(--cm));
+    --depth: calc(22 * var(--cm));
+    --width: calc(114 * var(--cm));
+    --z: calc(100 * var(--cm));
+    --x: calc(22 * var(--cm));
+    --y: calc(var(--wall-thickness) * -0.8);
+    > div{
+        background: var(--windowsill-shade-one);
+    }
+}
+
+.windowsill div:nth-of-type(2) {
+    background: rgb(219, 210, 210);
+}
+
+.windowsill div:nth-of-type(6) {
+    background: var(--windowsill-shade-three);
+}
+
+.stand {
+    height: calc((180 * var(--cm)) * 1vmin);
+    width: calc((68 * var(--cm)) * 1vmin);
+    top: calc((30 * var(--cm)) * 1vmin);
+    left: calc((0 * var(--cm)) * 1vmin);
+    position: absolute;
+    >   .stand__shadow {
+        background: rgba(0,0,0,0.5);
+        position: absolute;
+    }
+
+        .stand__shadow--floor {
+        background: radial-gradient(circle at 0 50%, rgba(0,0,0,0.35) 50%, transparent 80%);
+        height: 110%;
+        width: 80%;
+        top: 5%;
+    }
+
+        .tvStand {
+            --height: calc(4 * var(--cm));
+            --width: calc(68 * var(--cm));
+            --depth: calc(180 * var(--cm));
+            --z: calc(64 * var(--cm));
+        }
+        .tvStand div {
+            background: url("https://i.pinimg.com/736x/75/77/d1/7577d1933a5e1b853179527728eefa98--marble-texture-marble-pattern.jpg") 0 0/20vmin 30vmin;
+            background-size: cover;
+        }
+}
+
+.television {
+    --height: calc(90 * var(--cm));
+    --width: calc(2 * var(--cm));
+    --depth: calc(150 * var(--cm));
+    --y: calc(45 * var(--cm));
+    --x: var(--cm);
+    --z: calc(112.2 * var(--cm));
+
+    >   div{
+        background: rgb(39, 39, 39);
+    }
+}
+
+.television div:nth-of-type(4):after {
+    background: rgba(0,0,0,0.5);
+    position: absolute;
+    top: 8%;
+    left: 4%;
+    height: 100%;
+    width: 100%;
+    transition: transform var(--transition);
+}
+.television div:nth-of-type(3) {
+    background-image: url(https://www.whatascript.com/image-files/dead-poets-society-keating.jpg);
+    background-size: cover;
+}
+.television div:nth-of-type(3):after {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.shelf1 {
+    --height: calc(7 * var(--cm));
+    --depth: calc(26 * var(--cm));
+    --width: calc(60 * var(--cm));
+    --z: calc(74 * var(--cm));
+    --y: var(--cm);
+    --x: calc(150 * var(--cm));
+
+    >    div {
+        background-image: url(https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/rm187-nunny-52.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=eba847af773c1f2c8c924cb25fc647c3);
+        background-repeat: none;
+        background-size: 190px;
+        filter: brightness(200%);
+    }
+}
+
+.shelf2 {
+    --height: calc(7 * var(--cm));
+    --depth: calc(26 * var(--cm));
+    --width: calc(60 * var(--cm));
+    --z: calc(114 * var(--cm));
+    --y: var(--cm);
+    --x: calc(140 * var(--cm));
+
+    >    div {
+        background-image: url(https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/rm187-nunny-52.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=eba847af773c1f2c8c924cb25fc647c3);
+        background-repeat: none;
+        background-size: 190px;
+        filter: brightness(200%);
+    }
+}
+
+.shelf1 div:nth-of-type(5), .shelf2 div:nth-of-type(5){
+    background-image: url(https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/rm187-nunny-52.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=eba847af773c1f2c8c924cb25fc647c3);
+    filter: brightness(200%);
+    overflow: hidden;
+}
+.shelf1 div:nth-of-type(5):after, .shelf2 div:nth-of-type(5):after {
+    height: 200%;
+    width: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    filter: blur(calc(2 * var(--blur)));
+    transform: translate(-90%, -50%);
+}
+.shelf1 div:nth-of-type(3), .shelf2 div:nth-of-type(3) {
+    background-image: url(https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/rm187-nunny-52.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=eba847af773c1f2c8c924cb25fc647c3);
+    background-repeat: none;
+    background-size: 190px;
+    filter: brightness(200%);
+}
+.shelf1 div:nth-of-type(2):after, .shelf2 div:nth-of-type(2):after {
+    content: '';
+    width: 100%;
+    height: 250%;
+    position: absolute;
+    top: 110%;
+    left: 4%;
+    transform-origin: 50% 0;
+    transform: skewX(-5deg);
+}
+
+.letranger {
+    --height: calc(35 * var(--cm));
+    --width: calc(5 * var(--cm));
+    --depth: calc(22 * var(--cm));
+    --z: calc(135 * var(--cm));
+    --x: calc(180 * var(--cm));
+    --y: calc(5 * var(--cm));
+}
+.letranger div {
+    background: rgb(184, 164, 144);
+}
+.letranger div:nth-of-type(1) {
+    background: #fbf6e9;
+}
+.letranger div:nth-of-type(3) {
+    background-image: url(https://m.media-amazon.com/images/I/81cUhLVeQQL._AC_UF1000,1000_QL80_.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.warAndPeace {
+    --height: calc(30 * var(--cm));
+    --width: calc(15 * var(--cm));
+    --depth: calc(21 * var(--cm));
+    --z: calc(93 * var(--cm));
+    --x: calc(190 * var(--cm));
+    --y: calc(5 * var(--cm));
+}
+.warAndPeace div {
+    background: rgb(213, 208, 203);
+}
+.warAndPeace div:nth-of-type(1) {
+    background: #03b38a;
+    border: 4px #000;
+}
+.warAndPeace div:nth-of-type(3) {
+    background-image: url(https://images.penguinrandomhouse.com/cover/9781400079988);
+    background-size: cover;
+    background-color: #03b38a;
+    background-repeat: no-repeat;
+}
+
+.vintageBook1 {
+    --height: calc(7 * var(--cm));
+    --width: calc(50 * var(--cm));
+    --depth: calc(25 * var(--cm));
+    --z: calc(9 * var(--cm));
+    --x: calc(70 * var(--cm));
+    --y: calc(145 * var(--cm));
+}
+.vintageBook1  div {
+    background-image: url(https://png.pngtree.com/png-clipart/20211116/original/pngtree-hollowed-out-carved-retro-style-black-book-cover-png-image_6929891.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.vintageBook1  div:nth-of-type(1) {
+    background-image: url(https://img.rawpixel.com/private/static/images/website/2022-05/rm218batch8-aum-03.jpg?w=1200&h=1200&dpr=1&fit=clip&crop=default&fm=jpg&q=75&vib=3&con=3&usm=15&cs=srgb&bg=F4F4F3&ixlib=js-2.2.1&s=632ad325675c5d12b2b781be9df2df0c);
+    background-size: cover;
+}
+.vintageBook1  div:nth-of-type(3) {
+    background-image: url(https://thumbs.dreamstime.com/b/old-book-pages-spine-texture-vintage-paper-stack-background-selective-focus-189376409.jpg);
+    background-size: cover;
+}
+
+.emma {
+    --height: calc(7 * var(--cm));
+    --width: calc(50 * var(--cm));
+    --depth: calc(25 * var(--cm));
+    --z: calc(9 * var(--cm));
+    --x: calc(150 * var(--cm));
+    --y: calc(115 * var(--cm));
+    rotate: 20deg;
+}
+.emma  div{
+    background-image: url(https://pictures.abebooks.com/isbn/9782251004259-us-300.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.emma  div:nth-of-type(1) {
+     background-color: #FAA359;
+     background-image: none;
+}
+.emma  div:nth-of-type(3) {
+      background-color: #FBE1CB;
+      background-image: none;
+}
+
+.greatExpectations {
+    --height: calc(26 * var(--cm));
+    --width: calc(3 * var(--cm));
+    --depth: calc(17 * var(--cm));
+    --z: calc(95 * var(--cm));
+    --x: calc(220 * var(--cm));
+    --y: calc(10 * var(--cm));
+}
+
+.greatExpectations div {
+    background: rgb(213, 208, 203);
+}
+
+.greatExpectations div:nth-of-type(1) {
+    background: #030A4E;
+}
+
+.greatExpectations div:nth-of-type(3) {
+    background-image: url(https://cdn.shopify.com/s/files/1/0616/8156/5849/products/GreatExpectations_1608ec5e-c56b-4519-824c-a5a63bf2c7c1.png?v=1671550563);
+    background-size:cover;
+    background-color: #030A4E;
+    background-repeat: no-repeat;
+}
+
+.porcelain {
+    --height: calc(12 * var(--cm));
+    --width: calc(15 * var(--cm));
+    --depth: calc(15 * var(--cm));
+    --z: calc(85 * var(--cm));
+    --x: calc(160 * var(--cm));
+    --y: calc(10 * var(--cm));
+    background-image: url(https://w7.pngwing.com/pngs/391/241/png-transparent-huadi-blue-and-white-pottery-moutan-peony-classical-chinese-blue-and-white-porcelain-pattern-shading-pattern-peony-blue-abstract-painting-blue-chinese-style-geometric-pattern.png);
+    background-size:23px;
+}
+
+.porcelain div {
+    background-image: url(https://w7.pngwing.com/pngs/391/241/png-transparent-huadi-blue-and-white-pottery-moutan-peony-classical-chinese-blue-and-white-porcelain-pattern-shading-pattern-peony-blue-abstract-painting-blue-chinese-style-geometric-pattern.png);
+    background-size:23px;
+}
+
+.porcelain div:nth-of-type(1) {
+    background-image: url(https://w7.pngwing.com/pngs/391/241/png-transparent-huadi-blue-and-white-pottery-moutan-peony-classical-chinese-blue-and-white-porcelain-pattern-shading-pattern-peony-blue-abstract-painting-blue-chinese-style-geometric-pattern.png);
+    background-size:23px;
+}
+
+.porcelain div:nth-of-type(3) {
+    background-image: url(https://w7.pngwing.com/pngs/391/241/png-transparent-huadi-blue-and-white-pottery-moutan-peony-classical-chinese-blue-and-white-porcelain-pattern-shading-pattern-peony-blue-abstract-painting-blue-chinese-style-geometric-pattern.png);
+    background-size:23px;
+    background-color: #030A4E;
+    background-repeat: no-repeat;
+}
+
+.rug {
+    --height: calc(1 * var(--cm));
+    --width: calc(140 * var(--cm));
+    --depth: calc(140 * var(--cm));
+    --x: calc(55 * var(--cm));
+    --y: calc(40 * var(--cm));
+    --z: calc(0.5 * var(--cm));
+}
+
+.rug div:nth-of-type(5) {
+    background-image: url(https://i.ebayimg.com/images/g/zKkAAOSwXX5i3yze/s-l1600.jpg);
+    background-size: cover;
+    border-radius: 50%;
+}
+
+.poster {
+    --width: calc(60 * var(--cm));
+    --height: calc(60 * var(--cm));
+    --depth: calc(2 * var(--cm));
+    --z: calc(170 * var(--cm));
+    --x: calc(178 * var(--cm));
+    --y: var(--cm);
+}
+
+.poster div:nth-of-type(1) {
+    background-image: url(https://pbs.twimg.com/media/BflE74zCIAA92XJ.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.poster div:nth-of-type(2):after {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 10%;
+    left: -5%;
+}
+
+.window {
+    width: calc((114 * var(--cm)) * 1vmin);
+    height: calc((95 * var(--cm)) * 1vmin);
+    position: absolute;
+    transform: rotateX(90deg) translate3d(calc((22 * var(--cm)) * 1vmin), calc((102 * var(--cm)) * 1vmin), calc((18 * var(--cm)) * 1vmin));
+    transform-origin: 50% 0%;
+    background: rgba(0, 255, 236, 0.41);
+}
+.windowDepth, .windowBottom {
+    --depth: calc(4 * var(--cm));
+    --width: calc(115 * var(--cm));
+    --height: calc(4 * var(--cm));
+}
+
+.windowDepth div, .windowBottom div {
+    background: rgb(248, 248, 248);
+}
+
+.windowDepth div:nth-of-type(6),.windowBottom div:nth-of-type(6) {
+    background: rgb(246, 246, 252);
+}
+
+.window__frame--left, .window__frame--right {
+    --depth: calc(95 * var(--cm));
+    --width: calc(4 * var(--cm));
+    --height: calc(4 * var(--cm));
+}
+
+.window__frame--left div, .window__frame--right div {
+    background: rgb(217, 217, 228);
+}
+
+.window__frame--left div:nth-of-type(6), .window__frame--right div:nth-of-type(6) {
+    background: rgb(246, 246, 252);
+}
+
+.window__frame--right {
+    right: 0;
+}
