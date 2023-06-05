@@ -1,4 +1,4 @@
-# The-Philosopers-Cave
+# The-Philosophers-Cave
 This project is a 3D room created using HTML and CSS only. It utilizes CSS transformations and perspective to create a realistic 3D effect.
 
 # Pre-requisites
