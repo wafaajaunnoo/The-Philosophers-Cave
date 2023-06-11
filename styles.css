@@ -34,8 +34,6 @@ background: radial-gradient(circle, rgba(203,246,186,1) 0%, rgba(255,199,190,1) 
 }
 
 .container {
-    height: calc(var(--container-height, 25) * 1vmin);
-    width: calc(var(--container-width, 25) * 1vmin);
     transform-style: preserve-3d;
     transform: rotateX(calc((var(--rotate-x, -24) - (var(--zoomed) * var(--rotate-x, -24))) * 1deg)) rotateY(calc(((var(--rotate-y, -24) - (var(--zoomed) * var(--rotate-y, -24))) + (var(--zoomed) * -90)) * 1deg)) rotateX(90deg) translate3d(0, 0, 0);
 }
